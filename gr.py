@@ -32,6 +32,9 @@ def get(path, **params):
 def get_url(url):
     if not url.startswith("http"):
         url = "https://api.gumroad.com" + url
+    parsed = urllib.parse.urlsplit(url)
+    if parsed.scheme != "https" or parsed.hostname != "api.gumroad.com" or parsed.port not in (None, 443):
+        raise ValueError("refusing to send Gumroad credentials to a non-API URL")
     sep = "&" if "?" in url else "?"
     url = f"{url}{sep}access_token={TOKEN}"
     for attempt in range(5):
